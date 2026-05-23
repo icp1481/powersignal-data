@@ -39,9 +39,10 @@ datasets:
     schedule: "every_5_min"
 
   D3:
-    name: "기상청 ASOS 시간자료"
+    name: "기상청_지상(종관, ASOS) 시간자료 조회서비스"
     provider: "기상청"
-    portal_id: "kma_asos"
+    portal_id: "15057210"
+    portal_url: "https://www.data.go.kr/data/15057210/openapi.do"
     base_url: "https://apis.data.go.kr/1360000/AsosHourlyInfoService"
     endpoints:
       hourly: "/getWthrDataList"
