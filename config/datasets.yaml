@@ -1,0 +1,94 @@
+# PowerSignal 데이터셋 정의
+# 각 데이터셋의 엔드포인트·기본 파라미터·응답 포맷을 한 곳에서 관리.
+# Collector 코드는 이 파일을 읽어 동작 — 신규 엔드포인트 추가 시 코드 변경 최소화.
+
+datasets:
+
+  # ─── 그룹1: OpenAPI 자동 수집 ────────────────────────────────────────
+
+  D1:
+    name: "계통한계가격 및 수요예측 (하루전 발전계획용)"
+    provider: "전력거래소"
+    portal_id: "15131225"
+    base_url: "https://apis.data.go.kr/B552115/SmpAndDemandForecastInfo"
+    endpoints:
+      list: "/getSmpAndDemandForecastInfo"
+    response_format: "json"
+    default_params:
+      dataType: "JSON"
+      pageNo: 1
+      numOfRows: 100
+    schedule: "daily_after_23"
+    notes: |
+      구버전 15076302 는 삭제 예정 — 신버전 사용.
+      거래시간 06시 = 05:00~06:00 구간 끝점 표기.
+      지역: 육지/제주 모두 제공.
+
+  D2:
+    name: "현재전력수급현황조회"
+    provider: "전력거래소"
+    portal_id: "15056640"
+    base_url: "https://apis.data.go.kr/B552115/PowerSupplyAndDemandInfo"
+    endpoints:
+      current: "/getPowerSupplyAndDemandInfo"
+    response_format: "json"
+    default_params:
+      dataType: "JSON"
+      pageNo: 1
+      numOfRows: 10
+    schedule: "every_5_min"
+
+  D3:
+    name: "기상청 ASOS 시간자료"
+    provider: "기상청"
+    portal_id: "kma_asos"
+    base_url: "https://apis.data.go.kr/1360000/AsosHourlyInfoService"
+    endpoints:
+      hourly: "/getWthrDataList"
+    response_format: "json"
+    default_params:
+      dataType: "JSON"
+      dataCd: "ASOS"
+      dateCd: "HR"
+      pageNo: 1
+      numOfRows: 999
+    schedule: "daily_after_22"
+    # 주요 지점 (예시): 서울 108, 부산 159, 인천 112, 대구 143, 광주 156, 대전 133, 울산 152, 제주 184
+    default_stations: [108, 159, 112, 143, 156, 133, 152, 184]
+
+  D4:
+    name: "월간 연료비용 정보 (LNG/석탄/유류)"
+    provider: "공공데이터포털"
+    portal_id: "15099765"
+    base_url: "https://apis.data.go.kr/B552115/MonthlyFuelCostInfo"
+    endpoints:
+      monthly: "/getMonthlyFuelCostInfo"
+    response_format: "json"
+    default_params:
+      dataType: "JSON"
+      pageNo: 1
+      numOfRows: 100
+    schedule: "monthly"
+
+  # ─── 그룹2: 파일 다운로드 ────────────────────────────────────────────
+
+  D5:
+    name: "수요반응자원 거래실적 (경제성DR)"
+    provider: "전력거래소"
+    portal_id: "dr_economic_history"
+    file_format: "csv"
+    encoding_candidates: ["utf-8-sig", "cp949", "euc-kr"]
+    # 실제 다운로드 URL 은 공공데이터포털에서 매월 갱신될 수 있음 — 기획팀과 협의 후 확정.
+    download_url: null
+    schedule: "monthly_lag_2"
+    notes: |
+      D-2월 정산 지연 정상. 최신 월 데이터 공백은 에러 아님.
+
+  D6:
+    name: "수요반응자원 거래실적 (신뢰성DR)"
+    provider: "전력거래소"
+    portal_id: "15069360"
+    file_format: "csv"
+    encoding_candidates: ["utf-8-sig", "cp949", "euc-kr"]
+    download_url: null
+    schedule: "monthly_lag_2"

@@ -1,0 +1,37 @@
+# env
+.env
+.env.local
+.env.*.local
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.eggs/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# data — raw/parsed are runtime outputs
+data/raw/**
+!data/raw/.gitkeep
+data/parsed/**
+!data/parsed/.gitkeep
+data/*.db
+data/*.db-journal
+
+# static dataset 원본은 보존(가공된 결과만 commit). 필요 시 조정.
+data/static/raw/
+
+# editors
+.vscode/
+.idea/
+*.swp
+.DS_Store
